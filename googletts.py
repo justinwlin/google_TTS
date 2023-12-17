@@ -36,7 +36,16 @@ def generate_audio_using_google_tts(
     base64_data = response.json()["audioContent"]
     return base64_data
 
-def write_base64_audio_to_file(base64_data, output_audio_path):
+def write_base64_audio_to_file(base64_data, output_audio_path, chunk_size=1024):
+    """
+    Decode base64 audio data and write it to a file in chunks.
+
+    :param base64_data: Base64 encoded audio data.
+    :param output_audio_path: Path to save the decoded audio file.
+    :param chunk_size: Size of chunks to write to file (in bytes).
+    """
     audio_bytes = base64.b64decode(base64_data)
+
     with open(output_audio_path, "wb") as f:
-        f.write(audio_bytes)
+        for i in range(0, len(audio_bytes), chunk_size):
+            f.write(audio_bytes[i:i+chunk_size])
