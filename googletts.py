@@ -22,6 +22,8 @@ def generate_audio_using_google_tts(
         },
     }
 
+    print(f"Payload: {payload}")
+
     headers = {
         "X-Goog-Api-Key": google_api_key,
         "Content-Type": "application/json; charset=utf-8",
@@ -33,8 +35,11 @@ def generate_audio_using_google_tts(
         data=json.dumps(payload),
     )
 
-    base64_data = response.json()["audioContent"]
-    return base64_data
+    try:
+        base64_data = response.json()["audioContent"]
+        return base64_data
+    except:
+        Exception(f"Error in request to Google TTS API - maybe not authenticated / api rate limited: {response.text}")
 
 def write_base64_audio_to_file(base64_data, output_audio_path, chunk_size=1024):
     """
